@@ -28,7 +28,21 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   name                = "myNetworkSecurityGroup"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
+}
 
+resource "azurerm_network_security_rule" "testrules" {
+  for_each                    = local.nsgrules
+  name                        = each.key
+  direction                   = each.value.direction
+  access                      = each.value.access
+  priority                    = each.value.priority
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  destination_address_prefix  = each.value.destination_address_prefix
+  resource_group_name         = azurerm_resource_group.example.name
+  network_security_group_name = azurerm_network_security_group.myterraformnsg.name
 }
 
 resource "azurerm_network_interface" "main" {
@@ -55,6 +69,12 @@ resource "azurerm_virtual_machine" "main" {
   resource_group_name   = azurerm_resource_group.example.name
   network_interface_ids = [azurerm_network_interface.main.id]
   vm_size               = "Standard_D2as_v5"
+
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  # delete_os_disk_on_termination = true
+
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  # delete_data_disks_on_termination = true
 
   storage_image_reference {
     publisher = "Canonical"

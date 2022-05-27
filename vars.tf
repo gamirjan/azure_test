@@ -1,6 +1,9 @@
-variable "port_count" {
-  type = number
-}
+# variable "port_count" {
+#   type = number
+# }
+# variable "inbound_port_ranges" {
+#   type    = list(string)
+# }
 
 # variable "db_name" {
 #   type = string
