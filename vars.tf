@@ -1,6 +1,6 @@
-# variable "port_count" {
-#   type = number
-# }
+variable "filetemp" {
+  type = string
+}
 # variable "inbound_port_ranges" {
 #   type    = list(string)
 # }
