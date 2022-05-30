@@ -42,7 +42,7 @@ resource "azurerm_virtual_machine_extension" "example" {
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-    protected_settings = <<PROT
+  protected_settings = <<PROT
     {
         "script": "${base64encode(file(var.filetemp))}"
     }
@@ -60,7 +60,7 @@ resource "azurerm_mysql_server" "example" {
   administrator_login          = "mysqladminun"
   administrator_login_password = "H@Sh1CoR3!"
 
-  sku_name   = "B_Gen5_2"
+  sku_name   = "B_Gen5_1"
   storage_mb = 5120
   version    = "5.7"
 
@@ -79,4 +79,13 @@ resource "azurerm_mysql_database" "example" {
   server_name         = azurerm_mysql_server.example.name
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
+}
+
+
+resource "azurerm_mysql_firewall_rule" "example" {
+  name                = "office"
+  resource_group_name = azurerm_resource_group.example.name
+  server_name         = azurerm_mysql_server.example.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "255.255.255.255"
 }
