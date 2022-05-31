@@ -42,15 +42,9 @@ resource "azurerm_virtual_machine_extension" "example" {
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-  # protected_settings = <<PROT
-  #   {
-  #       "script": "${base64encode(file(var.filetemp))}"
-  #   }
-  #   PROT
     settings = <<SETTINGS
     {
         "script": "${base64encode(templatefile(var.filetemp, {
-          //vmname="${azurerm_virtual_machine.test.name}"
           hostname=azurerm_mysql_server.example.fqdn
           db_name=azurerm_mysql_database.example.name
           db_user=azurerm_mysql_server.example.administrator_login
@@ -64,12 +58,12 @@ SETTINGS
 }
 
 resource "azurerm_mysql_server" "example" {
-  name                = "example-mysqlserver7778"
+  name                =  var.db_name
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
-  administrator_login          = "mysqladminun"
-  administrator_login_password = "H@Sh1CoR3!"
+  administrator_login          = var.db_user
+  administrator_login_password = var.db_password
 
   sku_name   = "B_Gen5_1"
   storage_mb = 5120
@@ -100,7 +94,4 @@ resource "azurerm_mysql_firewall_rule" "example" {
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "255.255.255.255"
 
-  output "Wordpress_DNS" {
-  value = azurerm_mysql_server.fqdn
-}
 }
