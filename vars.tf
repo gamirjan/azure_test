@@ -17,3 +17,16 @@ variable "filetemp" {
 #   sensitive = true
 #   type      = string
 # }
+
+variable "db_name" {
+  type = string
+}
+
+variable "db_user" {
+  type = string
+}
+
+variable "db_password" {
+  sensitive = true
+  type      = string
+}

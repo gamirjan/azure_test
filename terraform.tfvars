@@ -1,9 +1,4 @@
 filetemp = "myfile"
-# port_count     = 2
-# inbound_port_ranges = [
-#     "22",
-#     "80"
-# ]
-# db_name        = "mydb"
-# db_username    = "example"
-# db_password    = "examplepass"
+db_name    = "mydb"
+db_user    = "example"
+db_password    = "Password1234!"

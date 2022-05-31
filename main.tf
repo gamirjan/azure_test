@@ -42,11 +42,22 @@ resource "azurerm_virtual_machine_extension" "example" {
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-  protected_settings = <<PROT
+  # protected_settings = <<PROT
+  #   {
+  #       "script": "${base64encode(file(var.filetemp))}"
+  #   }
+  #   PROT
+    settings = <<SETTINGS
     {
-        "script": "${base64encode(file(var.filetemp))}"
+        "script": "${base64encode(templatefile(var.filetemp, {
+          //vmname="${azurerm_virtual_machine.test.name}"
+          hostname=azurerm_mysql_server.example.fqdn
+          db_name=azurerm_mysql_database.example.name
+          db_user=azurerm_mysql_server.example.administrator_login
+          db_password=azurerm_mysql_server.example.administrator_login_password
+        }))}"
     }
-    PROT
+SETTINGS
   tags = {
     environment = "Production"
   }
@@ -70,7 +81,7 @@ resource "azurerm_mysql_server" "example" {
   infrastructure_encryption_enabled = false
   public_network_access_enabled     = true
   ssl_enforcement_enabled           = false
-  # ssl_minimal_tls_version_enforced  = "TLS1_2"
+  ssl_minimal_tls_version_enforced  = "TLSEnforcementDisabled"
 }
 
 resource "azurerm_mysql_database" "example" {
@@ -88,4 +99,8 @@ resource "azurerm_mysql_firewall_rule" "example" {
   server_name         = azurerm_mysql_server.example.name
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "255.255.255.255"
+
+  output "Wordpress_DNS" {
+  value = azurerm_mysql_server.fqdn
+}
 }
